@@ -54,6 +54,30 @@ class homeController{
         }
     }
     //End Method
+
+    price_range_product = async(req, res) => {
+        try {
+            const priceRange = {
+                low: 0,
+                high: 0
+            }
+            const products = await productModel.find({}).limit(12).sort({
+                createdAt: -1
+            })
+            const latest_product = this.formateProduct(products)
+            const getForPrice = await productModel.find({}).sort({
+                price: 1
+            })
+            if (getForPrice.length > 0) {
+                priceRange.high = getForPrice[getForPrice.length - 1].price
+                priceRange.low = getForPrice[0].price
+            }
+            responseReturn(res,200,{latest_product, priceRange})
+
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
 }
 
 module.exports = new homeController()
