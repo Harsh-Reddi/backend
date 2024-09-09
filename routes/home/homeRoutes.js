@@ -6,5 +6,6 @@ const router = require('express').Router()
 router.get('/get-categories',homeController.get_categories)
 router.get('/get-products',homeController.get_products)
 router.get('/price-range-latest-products',homeController.price_range_product)
+router.get('/query-products',homeController.query_products)
 
 module.exports = router
