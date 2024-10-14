@@ -21,6 +21,7 @@ app.use('/api',require('./routes/dashboard/sellerRoutes'))
 app.use('/api/home',require('./routes/home/homeRoutes'))
 app.use('/api',require('./routes/home/customerAuthRoute'))
 app.use('/api',require('./routes/home/cartRoutes'))
+app.use('/api',require('./routes/order/orderRoutes'))
 
 app.get('/',(req,res) => res.send('My Backend') )
 const port = process.env.PORT
