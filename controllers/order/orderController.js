@@ -5,6 +5,10 @@ const cartModel = require("../../models/cartModel")
 const { createToken } = require("../../utils/createToken")
 const { responseReturn } = require("../../utils/response")
 
+// const {mongo: {ObjectId}} = require('mongoose')
+const { ObjectId } = require('mongodb'); 
+
+
 class orderController{
     paymentCheck = async(id) => {
         try {
@@ -20,7 +24,7 @@ class orderController{
                 })
             }
         } catch (error) {
-            
+            console.log(error.message)
         }
     }
     //End Method
@@ -94,7 +98,33 @@ class orderController{
             console.log(error.message)
         }
     }
-    
+    //End Method
+
+    get_customer_dashboard_data = async(req, res) => {
+         const {userId} = req.params
+         try {
+           const recentOrders =  await customerOrderModel.find({
+                customerId: new ObjectId(userId)
+           }).limit(5)
+           const pendingOrder =  await customerOrderModel.find({
+                customerId: new ObjectId(userId), delivery_status: 'pending'
+           }).countDocuments()
+           const totalOrder =  await customerOrderModel.find({
+                customerId: new ObjectId(userId)
+           }).countDocuments()
+           const cancelledOrder =  await customerOrderModel.find({
+                customerId: new ObjectId(userId), delivery_status: 'cancelled'
+           }).countDocuments()
+           responseReturn(res, 200, {
+             recentOrders,
+             pendingOrder,
+             totalOrder,
+             cancelledOrder
+           })
+         } catch (error) {
+            console.log(error.message)
+         }
+    }
 
    
 }
