@@ -146,7 +146,17 @@ class orderController{
             console.log(error.message)
         }
     }
+    //End Method
 
+    get_order_details = async(req, res) => {
+        const {orderId} = req.params
+        try {
+            const order = await customerOrderModel.findById(orderId)
+            responseReturn(res, 200, {order})
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
    
 }
 
