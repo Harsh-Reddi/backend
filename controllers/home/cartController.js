@@ -1,4 +1,5 @@
 const cartModel = require("../../models/cartModel")
+const wishlistModel = require("../../models/wishlistModel")
 const { createToken } = require("../../utils/createToken")
 const { responseReturn } = require("../../utils/response")
 const bcrypt = require('bcrypt')
@@ -158,6 +159,21 @@ class cartController{
         }
     }
     //End Method
+
+    add_wishlist = async(req, res) => {
+        const {slug} = req.body
+        try {
+            const product = await wishlistModel.findOne({slug})
+            if (product) {
+                responseReturn(res,404, {error: 'Product is already in Wishlist'})
+            } else {
+                await wishlistModel.create(req.body)
+                responseReturn(res,201, {message: 'Product added to Wishlist'})
+            }
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
    
 }
 
