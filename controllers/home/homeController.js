@@ -1,5 +1,7 @@
+const moment = require("moment");
 const categoryModel = require("../../models/categoryModel")
 const productModel = require("../../models/productModel");
+const reviewModel = require("../../models/reviewModel");
 const queryProducts = require("../../utils/queryProducts");
 const { responseReturn } = require("../../utils/response")
 
@@ -125,6 +127,37 @@ class homeController{
                 }]
             }).limit(3)
             responseReturn(res,200,{product, relatedProducts, moreProducts})
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+    //End Method
+
+    submit_review = async(req, res) => {
+        const {name, review, rating, productId} = req.body
+        try {
+           await reviewModel.create({
+                name,
+                productId,
+                review,
+                rating,
+                date: moment(Date.now()).format('LL')
+           }) 
+           let rat = 0
+           const reviews = await reviewModel.find({
+                productId
+           })
+           for (let i = 0; i < reviews.length; i++) {
+               rat += reviews[i].rating
+           }
+           let productRating = 0
+           if (reviews.length !== 0) {
+                productRating = (rat/reviews.length).toFixed(1)
+           }
+           await productModel.findByIdAndUpdate(productId,{
+                rating: productRating
+           })
+           responseReturn(res,200,{message: 'Review submitted successfully'})
         } catch (error) {
             console.log(error.message)
         }
