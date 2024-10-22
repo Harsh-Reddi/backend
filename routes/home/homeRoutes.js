@@ -8,5 +8,6 @@ router.get('/get-products',homeController.get_products)
 router.get('/price-range-latest-products',homeController.price_range_product)
 router.get('/query-products',homeController.query_products)
 router.get('/product-details/:slug',homeController.product_details)
+router.post('/customer/submit-review',homeController.submit_review)
 
 module.exports = router
