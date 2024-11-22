@@ -128,7 +128,7 @@ class chatController{
             await sellerCustomerModel.updateOne({myId: sellerId},{myFriends})
             const data1 = await sellerCustomerModel.findOne({myId: sellerId})
             let myFriends1 = data1.myFriends
-            let index1 = myFriends1.findIndex(f => f.fdId === sellerId)
+            let index1 = myFriends1.findIndex(f => f.fdId === userId)
             while(index1 > 0) {
                 let temp1 = myFriends1[index1]
                 myFriends1[index1] = myFriends1[index1 - 1]
@@ -137,6 +137,49 @@ class chatController{
             }
             await sellerCustomerModel.updateOne({myId: sellerId},{myFriends1})
             responseReturn(res, 201, {message})
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+    //End Method
+
+    get_customers = async(req, res) => {
+        const {sellerId} = req.params
+        try {
+            const data = await sellerCustomerModel.findOne({myId: sellerId})
+            responseReturn(res, 200, {customers: data.myFriends})
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+    //End Method
+
+    get_customer_message = async(req, res) => {
+        const {customerId} = req.params
+        const {id} = req
+        try {
+            const messages = await sellerCustomerMessage.find({
+                $or : [
+                    {
+                        $and: [{
+                            receiverId: {$eq: customerId}
+                        },{
+                            senderId: {$eq: id}
+                        }]
+                    },{
+                        $and: [{
+                            receiverId: {$eq: id}
+                        },{
+                            senderId: {$eq: customerId}
+                        }]
+                    }
+                ]
+            })
+            const currentCustomer = await customerModel.findById(customerId)
+            responseReturn(res,200, {
+                messages,
+                currentCustomer
+            }) 
         } catch (error) {
             console.log(error.message)
         }
