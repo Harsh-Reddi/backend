@@ -9,7 +9,7 @@ const socket = require('socket.io')
 const http = require('http')
 const server = http.createServer(app)
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    origin: ['https://frontend-lilac-nine.vercel.app', 'https://dashboard-nine-kohl-29.vercel.app'],
     credentials : true
 }))
 
