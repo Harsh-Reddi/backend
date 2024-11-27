@@ -9,7 +9,7 @@ const socket = require('socket.io')
 const http = require('http')
 const server = http.createServer(app)
 app.use(cors({
-    origin: ['https://frontend-lilac-nine.vercel.app', 'https://dashboard-nine-kohl-29.vercel.app'],
+    origin: ['https://frontend-lilac-nine.vercel.app', 'https://dashboard-sand-chi-64.vercel.app'],
     credentials : true
 }))
 
