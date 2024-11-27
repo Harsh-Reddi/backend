@@ -1,5 +1,6 @@
 const sellerCustomerMessage = require("../../models/chat/sellerCustomerMessage")
 const sellerCustomerModel = require("../../models/chat/sellerCustomerModel")
+const adminSellerMessage = require('../../models/chat/adminSellerMessage')
 const customerModel = require("../../models/customerModel")
 const sellerModel = require("../../models/sellerModel")
 const { createToken } = require("../../utils/createToken")
@@ -57,6 +58,7 @@ class chatController{
                         }
                     ]
                 })
+                // console.log(checkCustomer)
                 if(!checkCustomer) {
                     await sellerCustomerModel.updateOne({
                         myId: sellerId
@@ -147,6 +149,7 @@ class chatController{
         const {sellerId} = req.params
         try {
             const data = await sellerCustomerModel.findOne({myId: sellerId})
+            // console.log(data)
             responseReturn(res, 200, {customers: data.myFriends})
         } catch (error) {
             console.log(error.message)
@@ -156,34 +159,199 @@ class chatController{
 
     get_customer_message = async(req, res) => {
         const {customerId} = req.params
+        // console.log(customerId)
         const {id} = req
+        console.log(`customerId: ${customerId}, id: ${id}`);
         try {
             const messages = await sellerCustomerMessage.find({
-                $or : [
+                $or: [
                     {
                         $and: [{
                             receiverId: {$eq: customerId}
                         },{
-                            senderId: {$eq: id}
+                            senderId: {
+                                $eq: id
+                            }
                         }]
-                    },{
+                    },
+                    {
                         $and: [{
                             receiverId: {$eq: id}
                         },{
-                            senderId: {$eq: customerId}
+                            senderId: {
+                                $eq: customerId
+                            }
                         }]
                     }
                 ]
-            })
-            const currentCustomer = await customerModel.findById(customerId)
-            responseReturn(res,200, {
-                messages,
-                currentCustomer
-            }) 
+           })
+           const currentCustomer = await customerModel.findById(customerId)
+           console.log(messages)
+           responseReturn(res, 200, {
+            messages,
+            currentCustomer
+           })
         } catch (error) {
             console.log(error.message)
         }
     }
+    //End Method
+
+    seller_message_add = async (req, res) => {
+        const {senderId,receiverId,text,name} = req.body
+        try {
+            const message = await sellerCustomerMessage.create({
+                senderId: senderId,
+                senderName: name,
+                receiverId: receiverId,
+                message : text 
+            })
+            const data = await sellerCustomerModel.findOne({ myId : senderId })
+            let myFriends = data.myFriends
+            let index = myFriends.findIndex(f => f.fdId === receiverId)
+            while (index > 0) {
+                let temp = myFriends[index]
+                myFriends[index] = myFriends[index - 1]
+                myFriends[index - 1] = temp
+                index--
+            }
+            await sellerCustomerModel.updateOne(
+                {
+                    myId: senderId
+                },
+                {
+                    myFriends
+                }
+            )
+            const data1 = await sellerCustomerModel.findOne({ myId : receiverId })
+            let myFriends1 = data1.myFriends
+            let index1 = myFriends1.findIndex(f => f.fdId === senderId)
+            while (index1 > 0) {
+                let temp1 = myFriends1[index1]
+                myFriends1[index1] = myFriends[index1 - 1]
+                myFriends1[index1 - 1] = temp1
+                index1--
+            }
+            await sellerCustomerModel.updateOne(
+                {
+                    myId: receiverId
+                },
+                {
+                    myFriends1
+                } 
+            )
+            responseReturn(res, 201,{message})
+        } catch (error) {
+            console.log(error)
+        }
+     }
+     // End Method 
+
+    get_sellers = async (req, res) => { 
+        try {
+            const sellers = await sellerModel.find({})
+            responseReturn(res, 200, {
+                sellers
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    // End Method 
+
+    seller_admin_message_insert = async (req, res) => {
+        const {senderId,receiverId,message,senderName} = req.body
+        try {
+            const messageData = await adminSellerMessage.create({
+                senderId,
+                receiverId,
+                message,
+                senderName 
+            })
+            responseReturn(res, 200, {message: messageData}) 
+        } catch (error) {
+            console.log(error)
+        }
+    } 
+    // End Method 
+
+    get_admin_messages = async (req, res) => {
+        const { receiverId } = req.params 
+        const id = ""
+        try {
+            const messages = await adminSellerMessage.find({
+                $or: [
+                    {
+                        $and: [{
+                            receiverId: {$eq: receiverId}
+                        },{
+                            senderId: {
+                                $eq: id
+                            }
+                        }]
+                    },
+                    {
+                        $and: [{
+                            receiverId: {$eq: id}
+                        },{
+                            senderId: {
+                                $eq: receiverId
+                            }
+                        }]
+                    }
+                ]
+           })
+           let currentSeller = {}
+           if (receiverId) {
+              currentSeller = await sellerModel.findById(receiverId)
+           }
+           responseReturn(res, 200, {
+            messages,
+            currentSeller
+           })
+            
+        } catch (error) {
+            console.log(error)
+        } 
+     }
+     // End Method 
+
+     get_seller_messages = async (req, res) => {
+        const receiverId = ""
+        const {id} = req
+        try {
+            const messages = await adminSellerMessage.find({
+                $or: [
+                    {
+                        $and: [{
+                            receiverId: {$eq: receiverId}
+                        },{
+                            senderId: {
+                                $eq: id
+                            }
+                        }]
+                    },
+                    {
+                        $and: [{
+                            receiverId: {$eq: id}
+                        },{
+                            senderId: {
+                                $eq: receiverId
+                            }
+                        }]
+                    }
+                ]
+           })
+     
+           responseReturn(res, 200, {
+            messages 
+           })
+            
+        } catch (error) {
+            console.log(error)
+        } 
+     }
+     // End Method 
     
 }
 
