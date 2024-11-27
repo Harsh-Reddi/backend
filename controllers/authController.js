@@ -99,47 +99,22 @@ class authControllers{
     }
     //End Method
 
-    // getUser = async(req,res) => {
-    //     const {id,role} = req
-    //     try {
-    //         if (role === 'admin') {
-    //             const user = await adminModel.findById(id)
-    //             responseReturn(res,200,{userInfo : user})
-    //         } else {
-    //             const seller = await sellerModel.findById(id)
-    //             responseReturn(res,200,{userInfo : seller})
-    //         }
-    //     } catch (error) {
-    //         responseReturn(res,500,{error: 'Internal Server Error'})
-    //     }
-    // }
-    // //End Method
-
-    const getUser = async (req, res) => {
-  const { id, role } = req;
-  
-  console.log("Request ID:", id);   // Log id
-  console.log("Request Role:", role); // Log role
-
-  try {
-    if (role === 'admin') {
-      const user = await adminModel.findById(id);
-      if (!user) {
-        return res.status(404).json({ error: 'Admin not found' });
-      }
-      responseReturn(res, 200, { userInfo: user });
-    } else {
-      const seller = await sellerModel.findById(id);
-      if (!seller) {
-        return res.status(404).json({ error: 'Seller not found' });
-      }
-      responseReturn(res, 200, { userInfo: seller });
+    getUser = async(req,res) => {
+        const {id,role} = req
+        try {
+            if (role === 'admin') {
+                const user = await adminModel.findById(id)
+                responseReturn(res,200,{userInfo : user})
+            } else {
+                const seller = await sellerModel.findById(id)
+                responseReturn(res,200,{userInfo : seller})
+            }
+        } catch (error) {
+            responseReturn(res,500,{error: 'Internal Server Error'})
+        }
     }
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    responseReturn(res, 500, { error: 'Internal Server Error' });
-  }
-};
+    //End Method
+
 
 
     profile_image_upload = async(req, res) => {
