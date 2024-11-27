@@ -22,9 +22,15 @@ class authControllers{
                         id: admin.id,
                         role: admin.role
                     })
-                    res.cookie('accessToken',token,{
-                        expires: new Date(Date.now() + 7*24*60*60*1000)
-                    })
+                    // res.cookie('accessToken',token,{
+                    //     expires: new Date(Date.now() + 7*24*60*60*1000)
+                    // })
+                    const cookieOptions = {
+                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+                        httpOnly: true,
+                    };
+                    if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+                    res.cookie('accessToken', token, cookieOptions);
                     responseReturn(res,200,{token,message: 'Login Success'})
                 } else {
                     responseReturn(res,404,{error: 'Password Wrong!'})
@@ -57,7 +63,13 @@ class authControllers{
                 const token = await createToken({
                     id: seller.id, role: seller.role
                 })
-                res.cookie('accessToken', token, {expires: new Date(Date.now() + 7*24*60*60*1000)})
+                // res.cookie('accessToken', token, {expires: new Date(Date.now() + 7*24*60*60*1000)})
+                const cookieOptions = {
+                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+                        httpOnly: true,
+                    };
+                    if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+                    res.cookie('accessToken', token, cookieOptions);
                 responseReturn(res,201,{token, message: 'Seller Registered Successfully!'})
             }
         }
@@ -81,9 +93,15 @@ class authControllers{
                         id: seller.id,
                         role: seller.role
                     })
-                    res.cookie('accessToken',token,{
-                        expires: new Date(Date.now() + 7*24*60*60*1000)
-                    })
+                    // res.cookie('accessToken',token,{
+                    //     expires: new Date(Date.now() + 7*24*60*60*1000)
+                    // })
+                    const cookieOptions = {
+                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+                        httpOnly: true,
+                    };
+                    if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+                    res.cookie('accessToken', token, cookieOptions);
                     responseReturn(res,200,{token,message: 'Login Success'})
                 } else {
                     responseReturn(res,404,{error: 'Password Wrong!'})
