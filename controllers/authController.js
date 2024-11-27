@@ -30,7 +30,7 @@ class authControllers{
                         httpOnly: true,
                     };
                     if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
-                    res.cookie('accessToken', token, cookieOptions);
+                    res.setHeader("Set-Cookie", `accessToken=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=604800`);
                     responseReturn(res,200,{token,message: 'Login Success'})
                 } else {
                     responseReturn(res,404,{error: 'Password Wrong!'})
@@ -69,7 +69,7 @@ class authControllers{
                         httpOnly: true,
                     };
                     if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
-                    res.cookie('accessToken', token, cookieOptions);
+                    res.setHeader("Set-Cookie", `accessToken=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=604800`);
                 responseReturn(res,201,{token, message: 'Seller Registered Successfully!'})
             }
         }
@@ -101,7 +101,7 @@ class authControllers{
                         httpOnly: true,
                     };
                     if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
-                    res.cookie('accessToken', token, cookieOptions);
+                    res.setHeader("Set-Cookie", `accessToken=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=604800`);
                     responseReturn(res,200,{token,message: 'Login Success'})
                 } else {
                     responseReturn(res,404,{error: 'Password Wrong!'})
