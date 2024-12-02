@@ -2,6 +2,8 @@ const formidable = require("formidable")
 const {responseReturn} = require("../../utils/response")
 const cloudinary = require('cloudinary').v2
 const productModel = require("../../models/productModel")
+const sellerModel = require('../../models/sellerModel')
+
 
 class productController{
     add_product = async(req, res) => {
@@ -9,7 +11,7 @@ class productController{
         const form = formidable({multiples: true})
         form.parse(req, async(err, fields, files) => {
             let {name, category, description, stock, price, discount, shopName, brand} = fields
-            const {images} = files
+            let {images} = files
             const imagesArray = Array.isArray(images) ? images : [images];
             name = name.trim()
             const slug = name.split(' ').join('-')
@@ -77,7 +79,6 @@ class productController{
         const {productId} = req.params
         try {
             const product = await productModel.findById(productId)
-            console.log({product})
             responseReturn(res, 200, {product})
         } catch (error) {
             console.log(error.message)
@@ -135,6 +136,7 @@ class productController{
         })
     }
     //end Method
+
 
 }
 module.exports = new productController()
