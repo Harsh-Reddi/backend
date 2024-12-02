@@ -204,7 +204,7 @@ class authControllers{
         // Clear the token by setting a null value with immediate expiration
         res.setHeader("Set-Cookie", `accessToken=null; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=0`);
 
-        responseReturn(res, 200, { message: 'Logout Success' });
+        responseReturn(res, 200,{ message : 'logout Success', userInfo : '', role: '', token: '' })
     } catch (error) {
         responseReturn(res, 500, { error: error.message });
     }
