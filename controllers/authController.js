@@ -180,18 +180,37 @@ class authControllers{
     }
     //End Method
 
-    logout = async (req, res) => {
-        try {
-            res.cookie('accessToken',null,{
-                expires : new Date(Date.now()),
-                httpOnly: true
-            })
-            responseReturn(res, 200,{ message : 'logout Success' })
-        } catch (error) {
-            responseReturn(res, 500,{ error : error.message })
-        }
-     }
+    // logout = async (req, res) => {
+    //     try {
+    //         res.cookie('accessToken',null,{
+    //             expires : new Date(Date.now()),
+    //             httpOnly: true
+    //         })
+    //         responseReturn(res, 200,{ message : 'logout Success' })
+    //     } catch (error) {
+    //         responseReturn(res, 500,{ error : error.message })
+    //     }
+    //  }
     // End Method 
+
+    logout = async (req, res) => {
+    try {
+        const cookieOptions = {
+            expires: new Date(Date.now()),
+            httpOnly: true,
+        };
+        if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+
+        // Clear the token by setting a null value with immediate expiration
+        res.setHeader("Set-Cookie", `accessToken=null; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=0`);
+
+        responseReturn(res, 200, { message: 'Logout Success' });
+    } catch (error) {
+        responseReturn(res, 500, { error: error.message });
+    }
+}
+// End Method
+
 }
 
 module.exports = new authControllers()
