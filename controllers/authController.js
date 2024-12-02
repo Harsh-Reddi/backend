@@ -61,11 +61,12 @@ class authControllers{
                 })
                 // res.cookie('accessToken', token, {expires: new Date(Date.now() + 7*24*60*60*1000)})
                 const cookieOptions = {
-                    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-                    httpOnly: true,
-                };
-                if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
-                res.setHeader("Set-Cookie", `accessToken=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=604800`);
+
+                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+                        httpOnly: true,
+                    };
+                    if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+                    res.setHeader("Set-Cookie", `accessToken=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=604800`);
                 responseReturn(res,201,{token, message: 'Seller Registered Successfully!'})
             }
         }
@@ -127,6 +128,8 @@ class authControllers{
         }
     }
     //End Method
+
+
 
     profile_image_upload = async(req, res) => {
         const {id} = req

@@ -10,6 +10,7 @@ const http = require('http')
 const server = http.createServer(app)
 app.use(cors({
     origin: ['http://localhost:3000', 'http://localhost:3001', 'https://frontend-lilac-nine.vercel.app', 'https://dashboard-sand-chi-64.vercel.app'],
+
     credentials : true
 }))
 
