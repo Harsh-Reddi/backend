@@ -186,7 +186,6 @@ class chatController{
                 ]
            })
            const currentCustomer = await customerModel.findById(customerId)
-           console.log(messages)
            responseReturn(res, 200, {
             messages,
             currentCustomer

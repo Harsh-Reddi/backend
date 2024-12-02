@@ -9,7 +9,7 @@ const socket = require('socket.io')
 const http = require('http')
 const server = http.createServer(app)
 app.use(cors({
-    origin: ['https://frontend-lilac-nine.vercel.app', 'https://dashboard-nine-kohl-29.vercel.app'],
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'https://frontend-lilac-nine.vercel.app', 'https://dashboard-sand-chi-64.vercel.app'],
     credentials : true
 }))
 
@@ -126,6 +126,8 @@ app.use('/api',require('./routes/home/customerAuthRoute'))
 app.use('/api',require('./routes/home/cartRoutes'))
 app.use('/api',require('./routes/order/orderRoutes'))
 app.use('/api',require('./routes/order/chatRoutes'))
+app.use('/api',require('./routes/paymentRoutes'))
+app.use('/api',require('./routes/dashboard/dashboardRoutes'))
 
 app.get('/',(req,res) => res.send('My Backend') )
 const port = process.env.PORT

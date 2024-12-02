@@ -13,7 +13,6 @@ class authControllers{
         const {email, password} = req.body
         try{
             const admin = await adminModel.findOne({email}).select('+password')
-            console.log(admin)
             if (admin) {
               const match = await bcrpty.compare(password, admin.password)
             //   console.log(match)
@@ -22,9 +21,12 @@ class authControllers{
                         id: admin.id,
                         role: admin.role
                     })
-                    res.cookie('accessToken',token,{
-                        expires: new Date(Date.now() + 7*24*60*60*1000)
-                    })
+                    const cookieOptions = {
+                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+                        httpOnly: true,
+                    };
+                    if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+                    res.setHeader("Set-Cookie", `accessToken=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=604800`);
                     responseReturn(res,200,{token,message: 'Login Success'})
                 } else {
                     responseReturn(res,404,{error: 'Password Wrong!'})
@@ -57,7 +59,13 @@ class authControllers{
                 const token = await createToken({
                     id: seller.id, role: seller.role
                 })
-                res.cookie('accessToken', token, {expires: new Date(Date.now() + 7*24*60*60*1000)})
+                // res.cookie('accessToken', token, {expires: new Date(Date.now() + 7*24*60*60*1000)})
+                const cookieOptions = {
+                    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+                    httpOnly: true,
+                };
+                if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+                res.setHeader("Set-Cookie", `accessToken=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=604800`);
                 responseReturn(res,201,{token, message: 'Seller Registered Successfully!'})
             }
         }
@@ -72,7 +80,6 @@ class authControllers{
         const {email, password} = req.body
         try{
             const seller = await sellerModel.findOne({email}).select('+password')
-            console.log(seller)
             if (seller) {
               const match = await bcrpty.compare(password, seller.password)
             //   console.log(match)
@@ -81,9 +88,15 @@ class authControllers{
                         id: seller.id,
                         role: seller.role
                     })
-                    res.cookie('accessToken',token,{
-                        expires: new Date(Date.now() + 7*24*60*60*1000)
-                    })
+                    // res.cookie('accessToken',token,{
+                    //     expires: new Date(Date.now() + 7*24*60*60*1000)
+                    // })
+                    const cookieOptions = {
+                        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+                        httpOnly: true,
+                    };
+                    if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+                    res.setHeader("Set-Cookie", `accessToken=${token}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=604800`);
                     responseReturn(res,200,{token,message: 'Login Success'})
                 } else {
                     responseReturn(res,404,{error: 'Password Wrong!'})
@@ -119,7 +132,6 @@ class authControllers{
         const {id} = req
         const form = formidable({multiples: true})
         form.parse(req, async(err,_,files) => {
-            console.log(files)
             cloudinary.config({
                 cloud_name: process.env.cloud_name,
                 api_key: process.env.api_key,
@@ -127,7 +139,6 @@ class authControllers{
                 secure: true
             })
             const {image} = files
-            console.log({image})
             try {
                 const result = await cloudinary.uploader.upload(image.filepath, {folder: 'profile'})
                 if (result) {

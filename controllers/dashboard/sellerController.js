@@ -6,7 +6,6 @@ const sellerModel = require('../../models/sellerModel')
 class sellerController{
 
     get_seller_request = async(req,res) => {
-        // console.log(req.query)
         const {page, searchValue, parPage} = req.query
         const skipPage = parseInt(parPage) * (parseInt(page) - 1)
         try {
